@@ -1,5 +1,6 @@
  var http = require('http');
-
+var players = [];
+ 
 var server = http.createServer(function(req, res) {
   res.writeHead(200);
   res.end('Salut tout le monde !');
@@ -11,11 +12,50 @@ var io = require('socket.io').listen(server);
 
 // Quand un client se connecte, on le note dans la console
 io.sockets.on('connection', function (socket) {
+	
+	
     console.log('Un client est connecté !');
-	 socket.on('beep', function(data) {
-       console.log("beeped : "+data);
-    })
+	
+	socket.emit('socketID', { id: socket.id });
+	
+
+	socket.emit('getPlayers', { players: players });
+	socket.broadcast.emit('newPlayer', { id: socket.id });
+	
+	socket.on('disconnect', function(){
+		console.log("Player Disconnected");
+		socket.broadcast.emit('playerDisconnected', { id: socket.id });
+		for(var i = 0; i < players.length; i++){
+			if(players[i].id == socket.id){
+				players.splice(i, 1);
+			}
+		}
+	});
+	
+	 socket.on('newPos', function(data) {
+       console.log("ID :  " + data['id'] +"  POS x: "+data['x'] + " POS y : "+data['y']+ " POS z : "+data['z']);
+	for(var i = 0; i < players.length; i++){
+			if(players[i].id == data['id']){
+				players[i].x = data.x;
+				players[i].y = data.y;
+				console.log(players[i].id+" "+players[i].x+" "+players[i].y);
+			}
+			
+		}
+		socket.emit('refreshPlayer', { players: players })
+		socket.broadcast.emit('refreshPlayer', { players: players });
+	})
+	
+	players.push(new player(socket.id, 0, 0));
+
 });
+
+
+function player(id, x, y){
+	this.id = id;
+	this.x = x;
+	this.y = y;
+}
 
 
 server.listen(8080);
