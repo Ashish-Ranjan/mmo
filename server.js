@@ -1,12 +1,18 @@
-var io = require('socket.io')({
-	transports: ['websocket'],
+ var http = require('http');
+
+var server = http.createServer(function(req, res) {
+  res.writeHead(200);
+  res.end('Salut tout le monde !');
+  console.log("connected");
 });
 
-io.attach(4567);
+// Chargement de socket.io
+var io = require('socket.io').listen(server);
 
-io.on('connection', function(socket){
-	 console.log('Un client est connecté !');
-	socket.on('beep', function(){
-		socket.emit('boop');
-	});
-})
+// Quand un client se connecte, on le note dans la console
+io.sockets.on('connection', function (socket) {
+    console.log('Un client est connecté !');
+});
+
+
+server.listen(8080);
