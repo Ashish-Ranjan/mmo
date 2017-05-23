@@ -44,7 +44,15 @@ io.sockets.on('connection', function (socket) {
 		}
 		socket.emit('refreshPlayer', { players: players })
 		socket.broadcast.emit('refreshPlayer', { players: players });
-	})
+	});
+	
+	 socket.on('ClickMove', function(data) {
+		 console.log("ID :  " + data['id'] +"  POS x: "+data['x'] + " POS y : "+data['y']+ " POS z : "+data['z']);
+		// socket.emit('GoClickMove', {id: data['id'], x : data['x'], y : data['y']});
+	 
+		socket.emit('GoClickMove', data);
+		socket.broadcast.emit('GoClickMove', data);
+	 });
 	
 	players.push(new player(socket.id, 0, 0));
 
