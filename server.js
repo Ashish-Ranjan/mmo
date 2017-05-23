@@ -12,8 +12,8 @@ var io = require('socket.io').listen(server);
 // Quand un client se connecte, on le note dans la console
 io.sockets.on('connection', function (socket) {
     console.log('Un client est connecté !');
-	 socket.on('beep', function() {
-       console.log('beeped');
+	 socket.on('beep', function(data) {
+       console.log("beeped : "+data);
     })
 });
 
