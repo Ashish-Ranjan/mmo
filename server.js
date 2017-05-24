@@ -42,8 +42,9 @@ io.sockets.on('connection', function (socket) {
 			}
 			
 		}
-		socket.emit('refreshPlayer', { players: players })
-		socket.broadcast.emit('refreshPlayer', { players: players });
+		//socket.emit('refreshPlayer', { players: players })
+		
+		//socket.broadcast.emit('refreshPlayer', { players: players });
 	});
 	
 	 socket.on('ClickMove', function(data) {
