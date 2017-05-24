@@ -55,6 +55,14 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('GoClickMove', data);
 	 });
 	
+	 socket.on('fire', function(data) {
+		 console.log("FIRE");
+		  console.log("ID :  " + data['id'] +"  POS x: "+data['x'] + " POS y : "+data['y']+ " POS z : "+data['z']);
+		socket.emit('fireHere', data);
+		socket.broadcast.emit('fireHere', data);
+	 });
+	
+	
 	players.push(new player(socket.id, 0, 0));
 
 });
