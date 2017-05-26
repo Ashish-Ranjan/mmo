@@ -32,6 +32,21 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 	
+	socket.on('refreshPLS', function(data) {
+	//socket.emit('refreshPlayer', { players: players });	
+	
+	for(var i = 0; i < players.length; i++){
+			if(players[i].id == data['id']){
+				players[i].x = data.x;
+				players[i].y = data.y;
+				console.log(players[i].id+" "+players[i].x+" "+players[i].y);
+			}
+			
+		}
+	socket.broadcast.emit('refreshPlayer', { players: players });
+	 });
+	
+	
 	 socket.on('newPos', function(data) {
        console.log("ID :  " + data['id'] +"  POS x: "+data['x'] + " POS y : "+data['y']+ " POS z : "+data['z']);
 	for(var i = 0; i < players.length; i++){
@@ -61,6 +76,14 @@ io.sockets.on('connection', function (socket) {
 		socket.emit('fireHere', data);
 		socket.broadcast.emit('fireHere', data);
 	 });
+	
+	 socket.on('sheild', function(data) {
+		 console.log("sheild");
+		  console.log("ID :  " + data['id'] +"  POS x: "+data['x'] + " POS y : "+data['y']+ " POS z : "+data['z']);
+		socket.emit('sheildHere', data);
+		socket.broadcast.emit('sheildHere', data);
+	 });
+	
 	
 	
 	players.push(new player(socket.id, 0, 0));
