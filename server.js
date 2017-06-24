@@ -13,14 +13,17 @@ var io = require('socket.io').listen(server);
 // Quand un client se connecte, on le note dans la console
 io.sockets.on('connection', function (socket) {
 	
+	setInterval(function() {
+	socket.emit('updateAllPos', { players: players });
+  }, 10); // End `get_online_users`
 	
-    console.log('Un client est connecté !');
+	socket.broadcast.emit('newPlayer', { id: socket.id });
+	
+	
+    console.log('Un client est connecté ! : ' + socket.id);
 	
 	socket.emit('socketID', { id: socket.id });
-	
-
-	socket.emit('getPlayers', { players: players });
-	socket.broadcast.emit('newPlayer', { id: socket.id });
+	socket.emit('currentConnected',{ players: players });
 	
 	socket.on('disconnect', function(){
 		console.log("Player Disconnected");
@@ -31,6 +34,34 @@ io.sockets.on('connection', function (socket) {
 			}
 		}
 	});
+	
+	 socket.on('pMove', function(data) {
+	for(var i = 0; i < players.length; i++){
+			if(players[i].id == data['id']){
+				players[i].x = data.x;
+				players[i].y = data.y;
+				players[i].z = data.z;
+				players[i].rx = data.rx;
+				players[i].ry = data.ry;
+				players[i].rz = data.rz;
+				players[i].w = data.w;
+				//console.log(players[i].id+" "+players[i].x+" "+players[i].y + " "+players[i].z);
+			}
+			
+		}
+		
+
+		//socket.emit('refreshPlayer', { players: players })
+		
+		//socket.broadcast.emit('refreshPlayer', { players: players });
+	});
+	
+	
+/*
+	socket.emit('getPlayers', { players: players });
+	socket.broadcast.emit('newPlayer', { id: socket.id });
+	
+	
 	
 	socket.on('refreshPLS', function(data) {
 	//socket.emit('refreshPlayer', { players: players });	
@@ -84,17 +115,22 @@ io.sockets.on('connection', function (socket) {
 		socket.broadcast.emit('sheildHere', data);
 	 });
 	
+	*/
 	
 	
-	players.push(new player(socket.id, 0, 0));
-
+players.push(new player(socket.id, 0, 0, 0, 0 ,0 ,0,1));
 });
 
 
-function player(id, x, y){
+function player(id, x, y, z, rx, ry, rz, w){
 	this.id = id;
 	this.x = x;
 	this.y = y;
+	this.z = z;
+	this.rx = rx;
+	this.ry = ry;
+	this.rz = rz;
+	this.w = w;
 }
 
 
