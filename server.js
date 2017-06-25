@@ -45,16 +45,20 @@ io.sockets.on('connection', function (socket) {
 				players[i].ry = data.ry;
 				players[i].rz = data.rz;
 				players[i].w = data.w;
-				//console.log(players[i].id+" "+players[i].x+" "+players[i].y + " "+players[i].z);
+				players[i].heal = data.heal;
 			}
 			
 		}
-		
-
-		//socket.emit('refreshPlayer', { players: players })
-		
-		//socket.broadcast.emit('refreshPlayer', { players: players });
 	});
+	
+	 socket.on('pShoot', function(data) {
+		 socket
+		//data['id']
+	socket.emit('playerShoot', { id: data['id'] });
+	socket.broadcast.emit('playerShoot', { id: data['id'] });
+	});
+	
+	
 	
 	
 /*
@@ -118,11 +122,11 @@ io.sockets.on('connection', function (socket) {
 	*/
 	
 	
-players.push(new player(socket.id, 0, 0, 0, 0 ,0 ,0,1));
+players.push(new player(socket.id, 0, 0, 0, 0 ,0 ,0,1,100));
 });
 
 
-function player(id, x, y, z, rx, ry, rz, w){
+function player(id, x, y, z, rx, ry, rz, w, heal){
 	this.id = id;
 	this.x = x;
 	this.y = y;
@@ -131,6 +135,7 @@ function player(id, x, y, z, rx, ry, rz, w){
 	this.ry = ry;
 	this.rz = rz;
 	this.w = w;
+	this.heal = heal;
 }
 
 
